@@ -46,7 +46,7 @@ public class FinalServer {
  */
 class ServerThread extends Thread{
 	private final ServerSocket serverSocket;
-
+	public Socket c;
 	public ServerThread(ServerSocket s){
 		this.serverSocket = s;
 		System.out.println("SERVIDOR A LA ESCUCHA POR EL PUERTO: "+ serverSocket.getLocalPort());
@@ -56,7 +56,7 @@ class ServerThread extends Thread{
 	public void run() {
 		try {
 			while (true) {
-				Socket c = serverSocket.accept();
+				c = serverSocket.accept();
 
 				// inicializa los buffers de entrada por el socket conectado
 				BufferedReader in = new BufferedReader(new InputStreamReader( c.getInputStream()));
@@ -68,9 +68,19 @@ class ServerThread extends Thread{
 		} catch (IOException e) { System.err.println(e);
 		} finally{
 			// siempre se intenta cerrar el ServerSocket. Aunque haya una excepcion.
-			try {
-				serverSocket.close();
-			} catch(IOException e) {System.out.println("Error: no se pudo cerrar el socket");}
+		try {
+			while((line=in.readLine()) != null){
+				System.out.println("ID:"+ this.getId()+"		MENSAJE: " 	+ line);
+				if (line.equals(".")){
+					c.close();
+					break;
+				}else{
+					out.println(line);
+				}
+			}
+			System.out.println("ID:"+ this.getId()+"		CONEXION TERMINADA");
+
+		} catch(IOException e) {System.out.println("Error: no se pudo leer desde el cliente");}
 		}
 	}
 
