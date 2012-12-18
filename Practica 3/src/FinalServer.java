@@ -4,8 +4,7 @@
  * DNI: 53675885A
  *
  * Servidor de "echo" multihilo a partir del codigo de ejemplo
- * proporcionado en la practica 3. Los hilos se gestionan desde
- * una piscina de hilos con el "ejecutor" de JAVA
+ * proporcionado en la practica 3. 
  */
 
 import java.io.BufferedReader;
@@ -27,12 +26,12 @@ public class FinalServer {
 		// usa el puerto por defecto CONNECTION_PORT o uno que se le pase por parametrod
 		int port = CONNECTION_PORT;
 		if(args.length > 0) port = Integer.parseInt(args[0]);
-		
+
 		// crea tantos hilos como estan especificados en la variable gloval NUM_THREADS
 		try {
 			ServerSocket serverSocket = new ServerSocket (port);
 			for(int i=0 ; i<NUM_THREADS; i++){
-				ServerThread1 serverThread = new ServerThread1(serverSocket);
+				ServerThread serverThread = new ServerThread(serverSocket);
 				serverThread.start();
 				System.out.println("Servidor n:" + (i+1) + "    ID:"+serverThread.getId());
 			}
@@ -47,6 +46,10 @@ public class FinalServer {
 class ServerThread extends Thread{
 	private final ServerSocket serverSocket;
 	public Socket c;
+	
+	/**
+	 * Constructor
+	 */
 	public ServerThread(ServerSocket s){
 		this.serverSocket = s;
 		System.out.println("SERVIDOR A LA ESCUCHA POR EL PUERTO: "+ serverSocket.getLocalPort());
@@ -61,31 +64,24 @@ class ServerThread extends Thread{
 				// inicializa los buffers de entrada por el socket conectado
 				BufferedReader in = new BufferedReader(new InputStreamReader( c.getInputStream()));
 				PrintWriter out = new PrintWriter(c.getOutputStream(), true);
-
 				// realiza la funcion de "echo", es decir reenvia el mensaje que recibe
 				echo(in, out);
+
 			}
 		} catch (IOException e) { System.err.println(e);
 		} finally{
 			// siempre se intenta cerrar el ServerSocket. Aunque haya una excepcion.
-		try {
-			while((line=in.readLine()) != null){
-				System.out.println("ID:"+ this.getId()+"		MENSAJE: " 	+ line);
-				if (line.equals(".")){
-					c.close();
-					break;
-				}else{
-					out.println(line);
-				}
-			}
-			System.out.println("ID:"+ this.getId()+"		CONEXION TERMINADA");
-
-		} catch(IOException e) {System.out.println("Error: no se pudo leer desde el cliente");}
+			try {
+				serverSocket.close();
+			} catch(IOException e) {System.out.println("Error: no se pudo leer desde el cliente");}
 		}
 	}
 
 	/**
-	 * Realiza las funciones de E/S a partir de los buffers
+	 * Realiza las funciones de E/S a partir de los buffers.
+	 * Lee y escribe por el buffer de entrada del socket hasta
+	 * que se encuentra con un "." entonces termina el bucle.
+	 * @return 
 	 */
 	private void echo(BufferedReader in, PrintWriter out){
 		System.out.println("ID:"+ this.getId()+"		CONEXION ACEPTADA");
