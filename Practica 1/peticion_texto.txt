@@ -1,0 +1,8 @@
+GET /texto.txt HTTP/1.1
+Host: localhost:2000
+Connection: keep-alive
+User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.89 Safari/537.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Encoding: gzip,deflate,sdch
+Accept-Language: es-ES,es;q=0.8
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
