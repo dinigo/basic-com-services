@@ -1,0 +1,24 @@
+<HTML>
+
+<HEAD>
+<TITLE>Formulario</TITLE>
+</HEAD>
+<BODY>
+	<FORM ACTION="http://localhost:22000/cgi-bin/cgi" METHOD=get>
+		nombre: <INPUT TYPE=text NAME=nombre SIZE=10 MAXLENGTH=10>
+		clave: <INPUT TYPE=password NAME=clave> <br>
+		<br> Elija un color:<br> <INPUT TYPE=radio NAME=color
+			VALUE=red> rojo <INPUT TYPE=radio NAME=color VALUE=blue
+			CHECKED>azul <INPUT TYPE=radio NAME=color VALUE=green>
+		verde <br>
+		<br> Escriba su mensaje aquí:<br>
+		<TEXTAREA NAME=msg ROWS=2 COLS=40>
+			Deje su mensaje
+		</TEXTAREA>
+		<br>
+		<br> <INPUT TYPE=reset VALUE="Limpiar campos"><br> <INPUT
+			TYPE=submit VALUE="Enviar formulario">
+	</FORM>
+</BODY>
+
+</HTML>
