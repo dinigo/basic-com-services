@@ -21,7 +21,8 @@ public class UDPechoClient {
 		boolean iterar = true;
 		while (iterar) {
 			String linea = getTeclado();
-			new EchoThread(address, serverPort, linea).start();
+			new EnviaThread(address, serverPort, linea).start();
+			new RecibeThread(address, serverPort).start();
 			if(linea.equals(".")) iterar = false;
 		} 
 	}
@@ -41,16 +42,19 @@ public class UDPechoClient {
 	}
 }
 
+
+
+
 /*
  * Realiza la operación de "echo". Con los parámetros que se le
  *  pasa intenta enviar y recibir una cadea.
  */
-class EchoThread extends Thread{
+class EnviaThread extends Thread{
 	private InetAddress address;
 	private int port;
 	private DatagramSocket ds;
 	private String mensaje;
-	public EchoThread(InetAddress address, int port, String mensaje) {
+	public EnviaThread(InetAddress address, int port, String mensaje) {
 		super();
 		this.address	= address;
 		this.port 		= port;
@@ -63,7 +67,62 @@ class EchoThread extends Thread{
 	@Override
 	public void run() {
 		enviaString();
+		super.run();
+	}
+
+	/**
+	 * Envia una cadena de texto.
+	 */
+	private void enviaString() {
+		byte[] data = this.mensaje.getBytes();
+		System.out.println();
+		System.out.println(" enviado en bytes	:" + data);
+		System.out.println(" enviado en string	:" + mensaje);
+		
+		DatagramPacket output = new DatagramPacket(data, data.length, address, port);
+		try {
+			ds.send(output);
+		} catch (IOException e) {e.printStackTrace();}
+	}
+		/**
+		 * Recibe una cadena de texto.
+		 */
+		private void recibeString() {
+			byte[] buffer = new byte[1024];
+			DatagramPacket dp = new DatagramPacket(buffer, buffer.length);
+			try {
+				ds.receive(dp);
+				System.out.println(" recibido en bytes	:" + dp.getData());
+				System.out.println(" recibido en string	:" + new String(dp.getData()));
+			} catch (IOException ex) { 	System.err.println(ex);
+			} finally {
+				ds.close();
+			}
+	}
+}
+
+/*
+ * Realiza la operación de "echo". Con los parámetros que se le
+ *  pasa intenta enviar y recibir una cadea.
+ */
+class RecibeThread extends Thread{
+	private InetAddress address;
+	private int port;
+	private DatagramSocket ds;
+	public RecibeThread(InetAddress address, int port) {
+		super();
+		this.address	= address;
+		this.port 		= port;
+		try {
+			this.ds  	= new DatagramSocket();
+		} catch (SocketException e) { e.printStackTrace(); }
+	}
+
+	@Override
+	public void run() {
+		System.out.println("recibiendo");
 		recibeString();
+		System.out.println("recibido");
 		super.run();
 	}
 
@@ -81,20 +140,5 @@ class EchoThread extends Thread{
 		} finally {
 			ds.close();
 		}
-	}
-
-	/**
-	 * Envia una cadena de texto.
-	 */
-	private void enviaString() {
-		byte[] data = this.mensaje.getBytes();
-		System.out.println();
-		System.out.println(" enviado en bytes	:" + data);
-		System.out.println(" enviado en string	:" + mensaje);
-		
-		DatagramPacket output = new DatagramPacket(data, data.length, address, port);
-		try {
-			ds.send(output);
-		} catch (IOException e) {e.printStackTrace();}
 	}
 }

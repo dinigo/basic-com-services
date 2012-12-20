@@ -1,5 +1,6 @@
 /*
- * USO: java ServidorHTTP <directorio_base> <puerto> <nombre_archivo_index>
+ * USO: 	java ServidorHTTP <directorio_base> <puerto> <nombre_archivo_index>
+ * EJEMPLO:	java ServidorHTTP . 18888 index.html
  */
 
 
@@ -25,13 +26,24 @@ public class ServidorHTTP {
 			baseDirectory= basedir;
 			if (!baseDirectory.isDirectory()) {
 				throw new IOException(baseDirectory + " no es un directorio");
+			} else {
+				String [] archivos = baseDirectory.list();
+				for(int i=0; i<archivos.length; i++) {
+					System.out.println("    - "+ archivos[i]);
+					if (archivos[i].equals("index.html")) {
+						System.out.println("El archivo index esta en: " + (new File(baseDirectory, archivos[i])));
+					}
+				}
+			}
+			if(new File(baseDirectory + indexFileName).isFile()) {
+				System.out.println("el archivo index existe");
 			}
 			indexFileName = indexfich;
 			server = new ServerSocket(port);
 
 			// Instanciar las hebras que escuchan
 			for (int i = 0; i < NUM_THREADS; i++) {
-				Thread t = new Thread( new RequestHTTP (baseDirectory, indexFileName));
+				RequestHTTP t =   new RequestHTTP (baseDirectory, indexFileName);
 				t.start();
 			}
 			// Servir

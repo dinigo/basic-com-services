@@ -38,6 +38,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+*.project
 
 # External tool builders
 .externalToolBuilders/
@@ -89,3 +90,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 lint.xml
+
+# Archivos PDF de las practicas
+*.pdf

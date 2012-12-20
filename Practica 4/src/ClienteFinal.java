@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
  */
 public class ClienteFinal {
 	//	private static final String CONNETCION_HOST = "localhost";
-	private static final int CONNECTION_PORT = 18788;
+	private static final int CONNECTION_PORT = 18888;
 
 	// Entrada/Salida
 	//	private Socket socket;
@@ -56,7 +56,7 @@ public class ClienteFinal {
 			// Ejecucion de la operacion
 			ejecutaComando(clientSocket,comando,argumento);
 		} catch (UnknownHostException e) { System.out.println("Error: Host desconocido: "+serverHost);
-		} catch (IOException e) {System.out.println("Error: fallo en la comunicacion");
+		} catch (IOException e) {System.out.println("Error: fallo en la comunicacion \n" + e );
 		} finally {
 			if(clientSocket!=null){
 				try{
@@ -119,20 +119,31 @@ public class ClienteFinal {
 	static void recibirFichero(String nombrefichero) {
 		try {
 			salidaTexto.println(Comando.GET.toString() + " " + nombrefichero);
-			Comando cmd = Comando.getEnum(entradaTexto.readLine());
+			String[]  respuestaPeticion= entradaTexto.readLine().split(" ");
+			String comandoString  = respuestaPeticion[respuestaPeticion.length-1];
+			System.out.println( comandoString);
+
+//			Comando cmd = Comando.getEnum(entradaTexto.readLine());
+			Comando cmd = Comando.getEnum(comandoString);
 			System.out.println( );
 			// si el fichero no existe se envia un mensaje de error y se termina la funcion
 			if(cmd.equals(Comando.ERROR)){
+				System.out.println("el comando fue error" );
+
 				System.out.println("El archivo "+ nombrefichero + " no existe en el servidor");
 				return;
 			} else if(cmd.equals(Comando.OK)){
-				long tamano = Integer.parseInt(entradaTexto.readLine());
+				System.out.println( "el comando fue ok");
+
+				long tamano = Long.parseLong(entradaTexto.readLine());
+				System.out.println("tamano :" + tamano );
+
 				salidaTexto.println(Comando.READY.toString()); // enviar comando READY al cliente
 				salidaTexto.flush();			
 				recibirBytes(nombrefichero, tamano);
 			}
 		} catch(Exception e) {
-			System.out.println("Error en el comando get: " + e);
+			System.out.println("Error en el comando get: \n" + e);
 		}
 
 	}

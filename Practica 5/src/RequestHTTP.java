@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 
-public class RequestHTTP implements Runnable {
+public class RequestHTTP extends Thread {
 	private File baseDirectory;
 	private String indexFileName= "index.html";
 	private Socket connection;
@@ -25,10 +25,11 @@ public class RequestHTTP implements Runnable {
 		}
 		if (indexFich != null) indexFileName= indexFich;
 		
-		System.out.println(" RequestHTTP  ID: " + Thread.currentThread().getId());
+		System.out.println(" RequestHTTP  ID: " + this.getId());
 
 	}
 
+	@Override
 	public void run() {
 		String root = baseDirectory.getPath();
 		// para chequeo de seguridad
@@ -64,10 +65,12 @@ public class RequestHTTP implements Runnable {
 				String version = "";
 				if (method.equals("GET")) {
 					filename = peticion[1];
-					if (filename.endsWith("/")) filename+= indexFileName;
+					if (filename.endsWith("/")) filename= indexFileName;
 					contentType = guessContentTypeFromName(filename);
 					File theFile = new File(baseDirectory,
-							filename.substring(1,filename.length()));
+							filename );
+					if (theFile.isFile())System.out.println("Archivo solicitado : " + theFile.getAbsolutePath());
+					else System.out.println("Ele archivo solicitado no existe: " + baseDirectory  +filename);
 					if (theFile.canRead() // No permite acceder fuera del directorio base
 							&& theFile.getCanonicalPath().startsWith(root)) {
 						DataInputStream fis = new DataInputStream(

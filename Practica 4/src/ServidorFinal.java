@@ -18,7 +18,7 @@ import java.net.Socket;
 
 
 public class ServidorFinal {
-	private static final int CONNECTION_PORT = 18788;
+	private static final int CONNECTION_PORT = 18888;
 
 	public static void main(String args[]) {
 		int port = CONNECTION_PORT;

@@ -1,12 +1,15 @@
 /*
- * NOMBRE: Daniel Iñigo Baños
- * UO: 194823
- * DNI: 53675885A
+ * NOMBRE: 	Daniel Iñigo Baños
+ * UO: 		194823
+ * DNI:		53675885A
  *
  * Clase que busca una palabra en una serie de archivos y escribe los
  * resultados por pantalla y en otro archivo "resultados.txt".
  * El callback de los hilos que lanza se ha hech seguro para que no
  * se impriman los reulstados antes de que acaben todas las hebras.
+ * 
+ * USO: 	java Buscador HOLA
+ * 			java Buscador ./ HOLA
  */
 
 import java.io.BufferedReader;
@@ -27,6 +30,12 @@ public class Buscador {
 		this.todasHebrasFuncionando = false;
 		this.palabra = palabra;
 		this.directorio = new File(directorio);
+		String [] archivos = this.directorio.list();
+		System.out.println("DIRECTORIO SELECCIONADO: "+ this.directorio.getAbsolutePath());
+		System.out.println("ARCHIVOS:");
+		for(int i=0; i<archivos.length; i++) {
+			System.out.println("    "+ archivos[i]);
+		}
 	}
 	
 	/** 
@@ -38,6 +47,7 @@ public class Buscador {
 	}
 
 	public static void main(String args[]) {
+		System.out.println("DIRECTORIO DE TRABAJO: " + new File(".").getAbsolutePath());
 		Buscador mBuscador = null;
 		if(args.length == 1){
 			mBuscador = new Buscador(args[0]);
