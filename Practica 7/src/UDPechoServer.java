@@ -14,8 +14,6 @@ public class UDPechoServer {
 				ds.receive(dp);
 				System.out.println();
 				System.out.println("    from    		: " + dp.getAddress().toString() + " : " + dp.getPort());
-				System.out.println("    mensaje bytes	: " + dp.getData());
-				System.out.println("    mensaje String	: " + new String(dp.getData()));
 				ds.send(dp);
 			} catch (Exception e) {}
 		}
